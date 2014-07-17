@@ -41,20 +41,24 @@ namespace Nest
 			fromIndex.ThrowIfNullOrEmpty("fromIndex");
 			toIndex.ThrowIfNullOrEmpty("toIndex");
 
-			var indexSettings = this.CurrentClient.GetIndexSettings(i=>i.Index(this._reindexDescriptor._FromIndexName));
-			Func<CreateIndexDescriptor, CreateIndexDescriptor> settings =
-				this._reindexDescriptor._CreateIndexSelector ?? ((ci) => ci);
-
-			var createIndexResponse = this.CurrentClient.CreateIndex(
-				toIndex, (c) => settings(c.InitializeUsing(indexSettings.IndexSettings)));
-			if (!createIndexResponse.IsValid)
-				throw new ReindexException(createIndexResponse.ConnectionStatus);
+            //var indexSettings = this.CurrentClient.GetIndexSettings(this._reindexDescriptor._FromIndexName);
+            //var createSettings = new CreateIndexDescriptor(this._connectionSettings)
+            //    .InitializeUsing(indexSettings.Settings);
+            //var createIndexResponse = this.CurrentClient
+            //    .CreateIndex(toIndex, (c) =>
+            //    {
+            //        if (this._reindexDescriptor._CreateIndexSelector != null)
+            //            return this._reindexDescriptor._CreateIndexSelector(createSettings);
+            //        return c;
+            //    });
+            //if (!createIndexResponse.IsValid)
+            //    throw new ReindexException(createIndexResponse.ConnectionStatus);
 
 			var page = 0;
 			var searchResult = this.CurrentClient.Search<T>(
 				s => s
 					.Index(fromIndex)
-					.AllTypes()
+					//.AllTypes()
 					.From(0)
 					.Take(100)
 					.Query(this._reindexDescriptor._QuerySelector ?? (q=>q.MatchAll()))
