@@ -87,7 +87,13 @@ namespace Nest
 			type = GetUnderlyingType(type);
 
 			if (type == typeof(string))
-				return new TextProperty();
+				return new TextProperty
+				{
+					Fields = new Properties
+					{
+						{ "keyword", new KeywordProperty() }
+					}
+				};
 
 			if (type.IsEnumType())
 				return new NumberProperty(NumberType.Integer);
@@ -121,14 +127,14 @@ namespace Nest
 						return new BooleanProperty();
 					case "Char":
 					case "Guid":
-						return new TextProperty();
+						return new KeywordProperty();
 				}
 			}
 
 			if (type == typeof(GeoLocation))
 				return new GeoPointProperty();
 
-			if (type.IsGeneric() && type.GetGenericTypeDefinition() == typeof(CompletionField<>))
+			if (type == typeof(CompletionField))
 				return new CompletionProperty();
 
 			return new ObjectProperty();

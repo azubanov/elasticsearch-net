@@ -130,19 +130,18 @@ namespace Tests.Framework.Integration
 		}
 
 		public static TypeMappingDescriptor<Project> MapProject(TypeMappingDescriptor<Project> m) => m
+			.AutoMap()
 			.Properties(props => props
-				.Text(s => s
+				.Keyword(s => s
 					.Name(p => p.Name)
-					.Index(false)
 					.Fields(fs => fs
 						.Text(ss => ss.Name("standard").Analyzer("standard"))
 						.Completion(cm => cm.Name("suggest"))
 					)
 				)
 				.Date(d => d.Name(p => p.StartedOn))
-				.Text(d => d
+				.Keyword(d => d
 					.Name(p => p.State)
-					.Index(false)
 					.Fields(fs => fs
 						.Text(st => st.Name("offsets").IndexOptions(IndexOptions.Offsets))
 					)
@@ -158,27 +157,25 @@ namespace Tests.Framework.Integration
 				.GeoPoint(g => g.Name(p => p.Location))
 				.Completion(cm => cm
 					.Name(p => p.Suggest)
-					.Payloads()
-					.Context(cnt => cnt
-						.Category("color", cat => cat
-							.Default("red")
+					.Contexts(cx => cx
+						.Category(c => c
+							.Name("color")
 						)
 					)
 				)
 			);
 
 		private static PropertiesDescriptor<Tag> TagProperties(PropertiesDescriptor<Tag> props) => props
-			.Text(s => s
+			.Keyword(s => s
 				.Name(p => p.Name)
-				.Index(false)
 				.Fields(f => f
 					.Text(st => st.Name("vectors").TermVector(TermVectorOption.WithPositionsOffsetsPayloads))
 				)
 			);
 
 		private static PropertiesDescriptor<Developer> DeveloperProperties(PropertiesDescriptor<Developer> props) => props
-			.Text(s => s.Name(p => p.OnlineHandle).Index(false))
-			.Text(s => s.Name(p => p.Gender).Index(false))
+			.Keyword(s => s.Name(p => p.OnlineHandle))
+			.Keyword(s => s.Name(p => p.Gender))
 			.Text(s => s.Name(p => p.FirstName).TermVector(TermVectorOption.WithPositionsOffsetsPayloads))
 			.Ip(s => s.Name(p => p.IPAddress))
 			.GeoPoint(g => g.Name(p => p.Location).LatLon())
